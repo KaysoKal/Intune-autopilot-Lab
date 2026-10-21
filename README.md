@@ -6,7 +6,6 @@ A brand-new VM was registered in Autopilot with its hardware hash. When a user s
 
 **Built:** October 2026 · **Author:** Kiano Kelly
 
----
 
 ## Results
 
@@ -15,35 +14,18 @@ A brand-new VM was registered in Autopilot with its hardware hash. When a user s
 | Device registered in Autopilot, profile assigned | ✅ | [20](screenshots/20-autopilot-profile-assigned.png) |
 | Device joined the dynamic Autopilot group automatically | ✅ | [21](screenshots/21-autopilot-devices-group-member.png) |
 | Device named itself from the template (`LAB-6622`) | ✅ | [23](screenshots/23-hostname-lab-6622.png) |
-| Entra joined, enrolled in Intune, primary user set | ✅ | [35](screenshots/35-device-compliant.png) |
-| Company Portal installed with no user action | ✅ | [35](screenshots/35-device-compliant.png) |
+| Entra joined, enrolled in Intune, primary user set | ✅ | [39](screenshots/39-compliant-after-remote-restart.png) |
+| Company Portal installed with no user action | ✅ | [39](screenshots/39-compliant-after-remote-restart.png) |
 | BitLocker on with TPM protector | ✅ | [33](screenshots/33-manage-bde-protection-on.png) |
 | BitLocker recovery key backed up to Entra ID | ✅ | [32](screenshots/32-bitlocker-success-events.png) |
-| Device marked **Compliant** | ✅ | [35](screenshots/35-device-compliant.png), [36](screenshots/36-devices-list-compliant.png) |
-| Remote Sync and remote Restart sent from Intune | ✅ | [35](screenshots/35-device-compliant.png) (Sync status pane) |
+| Device marked **Compliant** (2 of 2 compliance policies, 4 of 4 configuration policies) | ✅ | [39](screenshots/39-compliant-after-remote-restart.png), [36](screenshots/36-devices-list-compliant.png) |
+| Remote Sync and remote Restart sent from Intune | ✅ | [35](screenshots/35-device-compliant.png) (after Sync), [39](screenshots/39-compliant-after-remote-restart.png) (after Restart) |
 | Incidents documented in Jira Service Management | ✅ | [37](screenshots/37-jira-help-3.png), [38](screenshots/38-jira-help-4.png) |
 
-<!-- Add later: screenshots/39-remote-restart-device-action-status.png and screenshots/40-bitlocker-recovery-key-redacted.png -->
+<!-- Add later: screenshots/40-remote-restart-device-action-status.png and screenshots/41-bitlocker-recovery-key-redacted.png -->
 
-![Device compliant in Intune](screenshots/35-device-compliant.png)
+![Device compliant in Intune](screenshots/39-compliant-after-remote-restart.png)
 
----
-
-## How it works
-
-```mermaid
-flowchart LR
-    A[New Windows 11 VM<br/>at setup screen] -->|Get-WindowsAutopilotInfo -Online| B[Autopilot service<br/>hardware hash registered]
-    B --> C[Dynamic group<br/>Autopilot-Devices]
-    C --> D[Autopilot profile<br/>+ Enrollment Status Page]
-    D -->|User signs in| E[Entra join +<br/>Intune enrollment]
-    E --> F[Policies applied<br/>Compliance · BitLocker · Update ring]
-    E --> G[Required app<br/>Company Portal]
-    F --> H[Device Compliant]
-    G --> H
-```
-
----
 
 ## Environment
 
@@ -85,7 +67,7 @@ Full step-by-step instructions with every setting: [docs/build-guide.md](docs/bu
 |---|---|---|
 | Hardware hash upload failed repeatedly at the setup screen | Fresh OS had no PowerShell Gallery registered, Graph sign-in (WAM) crashed PowerShell, then a DNS lookup failed | Registered PSGallery, installed Graph auth module, disabled WAM, re-ran after DNS resolved |
 | Device **Not compliant**: encryption rule failed | No BitLocker policy existed, **and** the Windows ISO was still attached (BitLocker Event 853) | Created the BitLocker policy, removed the ISO, restarted |
-| Default policy error **65001** | Compliance policy assigned to a user group only, so the device-context check found no policy | Assigned the compliance policy to the device group too |
+| Default policy error **65001** | Compliance policy assigned to a user group only, so the device-context check found no policy | Assigned the compliance policy to the device group too, then sent a remote Sync and Restart |
 
 All 13 issues, with symptoms, causes, and fixes: [docs/troubleshooting.md](docs/troubleshooting.md).
 
@@ -121,5 +103,5 @@ intune-autopilot-lab/
 ├── tickets/
 │   ├── HELP-3-bitlocker-blocked-by-iso.md
 │   └── HELP-4-compliance-policy-assignment.md
-└── screenshots/              # 01–38, in build order
+└── screenshots/              # 01–39, in build order
 ```
